@@ -1,7 +1,6 @@
 from gaussian_splatting.camera import build_camera
 from gaussian_splatting.dataset.colmap import read_colmap_cameras
-from .dataset import RescaleCameraDataset
-from .camera_trainable import RescaleTrainableCameraDataset
+from .dataset import RescaleCameraDataset, RescaleTrainableCameraDataset
 
 
 class RescaleColmapCameraDataset(RescaleCameraDataset):
