@@ -43,5 +43,27 @@
                 "output/truck/8x/point_cloud/iteration_30000/point_cloud.ply",
             ]
         },
+        {
+            "name": "train 2x",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "lapisgs.train",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": [
+                "-s",
+                "data/truck",
+                "-d",
+                "output/truck/2x",
+                "-i",
+                "30000",
+                "--mode",
+                "base",
+                "--rescale_factor",
+                "0.5",
+                "-l",
+                "output/truck/4x/point_cloud/iteration_30000/point_cloud.ply",
+            ]
+        },
     ]
 }
