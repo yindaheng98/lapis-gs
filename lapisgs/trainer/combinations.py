@@ -25,3 +25,10 @@ def DepthLapisCameraTrainer(model: CameraTrainableGaussianModel, scene_extent: f
         lambda model, scene_extent, dataset, *args, **kwargs: DepthLapisTrainer(model, scene_extent, *args, **kwargs),
         model, scene_extent, dataset, *args, **kwargs
     )
+
+
+# Aliases for default trainers
+Trainer = LapisTrainer
+CameraTrainer = LapisCameraTrainer
+DepthTrainer = DepthLapisTrainer
+DepthCameraTrainer = DepthLapisCameraTrainer
