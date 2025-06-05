@@ -1,3 +1,4 @@
+/gaussian_splatting
 *.pyc
 .vscode
 output
