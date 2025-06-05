@@ -4,8 +4,8 @@ import torch
 from gaussian_splatting import GaussianModel
 from gaussian_splatting.dataset import CameraDataset
 from gaussian_splatting.trainer import AbstractTrainer
-from gaussian_splatting.prepare import prepare_gaussians
 from gaussian_splatting.train import save_cfg_args, training
+from reduced_3dgs.prepare import prepare_gaussians
 from lapisgs.prepare import prepare_dataset
 from lapisgs.prepare_reduced import modes, prepare_trainer
 

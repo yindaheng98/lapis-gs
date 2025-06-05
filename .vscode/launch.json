@@ -5,7 +5,7 @@
             "name": "train full pipeline",
             "type": "debugpy",
             "request": "launch",
-            "module": "lapisgs.train_full_pipeline",
+            "module": "lapisgs.train_full_pipeline_reduced",
             "console": "integratedTerminal",
             "justMyCode": false,
             "args": [

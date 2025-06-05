@@ -8,11 +8,11 @@ from lapisgs.trainer import Trainer, CameraTrainer, DepthTrainer, DepthCameraTra
 
 def prepare_dataset(source: str, device: str, trainable_camera: bool = False, load_camera: str = None, load_depth=False, rescale_factor=1.0) -> CameraDataset:
     if trainable_camera:
-        dataset = (RescaleJSONCameraDataset(load_camera, load_depth=load_depth, rescale_factor=rescale_factor)
-                   if load_camera else RescaleColmapCameraDataset(source, load_depth=load_depth, rescale_factor=rescale_factor)).to(device)
-    else:
         dataset = (RescaleTrainableCameraDataset.from_json(load_camera, load_depth=load_depth, rescale_factor=rescale_factor)
                    if load_camera else RescaleColmapTrainableCameraDataset(source, load_depth=load_depth, rescale_factor=rescale_factor)).to(device)
+    else:
+        dataset = (RescaleJSONCameraDataset(load_camera, load_depth=load_depth, rescale_factor=rescale_factor)
+                   if load_camera else RescaleColmapCameraDataset(source, load_depth=load_depth, rescale_factor=rescale_factor)).to(device)
     return dataset
 
 
