@@ -1,12 +1,11 @@
 from gaussian_splatting.camera import build_camera
-from gaussian_splatting.dataset.colmap import read_colmap_cameras
-from .dataset import RescaleCameraDataset, RescaleTrainableCameraDataset
+from gaussian_splatting.dataset.colmap import read_colmap_cameras, ColmapCameraDataset
+from .dataset import RescaleCameraDatasetIface, RescaleTrainableCameraDataset
 
 
-class RescaleColmapCameraDataset(RescaleCameraDataset):
+class RescaleColmapCameraDataset(RescaleCameraDatasetIface, ColmapCameraDataset):
     def __init__(self, colmap_folder, load_depth=False, rescale_factor=1.0):
         # https://github.com/yindaheng98/gaussian-splatting/blob/56576b647d9c5bd05300f5640cd03a8c75a760bc/gaussian_splatting/dataset/colmap/dataset.py#L89
-        super().__init__()
         self.raw_cameras = read_colmap_cameras(colmap_folder, load_depth=load_depth)
         self.raw_image_hw = [(raw_camera.image_height, raw_camera.image_width) for raw_camera in self.raw_cameras]
         self.raw_cameras = [

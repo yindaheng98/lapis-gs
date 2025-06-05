@@ -1,12 +1,12 @@
 import torch
 import json
 
-from gaussian_splatting.dataset import CameraDataset, JSONCameraDataset, TrainableCameraDataset
+from gaussian_splatting.dataset import JSONCameraDataset, TrainableCameraDataset
 from gaussian_splatting.camera import camera2dict, dict2camera, Camera
 from gaussian_splatting.utils import quaternion_to_matrix
 
 
-class RescaleCameraDataset(CameraDataset):
+class RescaleCameraDatasetIface:
     def save_cameras(self, path):
         # https://github.com/yindaheng98/gaussian-splatting/blob/56576b647d9c5bd05300f5640cd03a8c75a760bc/gaussian_splatting/dataset/dataset.py#L24
         cameras = []
@@ -23,7 +23,7 @@ class RescaleCameraDataset(CameraDataset):
             json.dump(cameras, f, indent=2)
 
 
-class RescaleJSONCameraDataset(JSONCameraDataset):
+class RescaleJSONCameraDataset(RescaleCameraDatasetIface, JSONCameraDataset):
     def __init__(self, path, load_depth=False, rescale_factor=1.0):
         # https://github.com/yindaheng98/gaussian-splatting/blob/56576b647d9c5bd05300f5640cd03a8c75a760bc/gaussian_splatting/dataset/dataset.py#L38
         with open(path, 'r') as f:
@@ -39,7 +39,6 @@ class RescaleJSONCameraDataset(JSONCameraDataset):
 
 
 class RescaleTrainableCameraDataset(TrainableCameraDataset):
-
     def save_cameras(self, path):
         # https://github.com/yindaheng98/gaussian-splatting/blob/56576b647d9c5bd05300f5640cd03a8c75a760bc/gaussian_splatting/dataset/camera_trainable.py#L68
         cameras = []
