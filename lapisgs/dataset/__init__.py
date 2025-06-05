@@ -1,1 +1,2 @@
+from .dataset import RescaleCameraDataset, RescaleJSONCameraDataset
 from .colmap import RescaleColmapCameraDataset, RescaleColmapTrainableCameraDataset
