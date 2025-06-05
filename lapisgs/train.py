@@ -59,7 +59,7 @@ def prepare_trainer(gaussians: GaussianModel, dataset: CameraDataset, mode: str,
             )
         case _:
             raise ValueError(f"Unknown mode: {mode}")
-    return gaussians, trainer
+    return trainer
 
 
 def prepare_training(sh_degree: int, source: str, device: str, mode: str, load_ply: str = None, load_camera: str = None, load_depth=False, rescale_factor=1.0, with_scale_reg=False, configs={}) -> Tuple[CameraDataset, GaussianModel, AbstractTrainer]:

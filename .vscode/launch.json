@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "train",
+            "name": "train 8x",
             "type": "debugpy",
             "request": "launch",
             "module": "lapisgs.train",
@@ -12,13 +12,35 @@
                 "-s",
                 "data/truck",
                 "-d",
-                "output/truck",
+                "output/truck/8x",
                 "-i",
                 "30000",
                 "--mode",
                 "base",
                 "--rescale_factor",
                 "0.125",
+            ]
+        },
+        {
+            "name": "train 4x",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "lapisgs.train",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": [
+                "-s",
+                "data/truck",
+                "-d",
+                "output/truck/4x",
+                "-i",
+                "30000",
+                "--mode",
+                "base",
+                "--rescale_factor",
+                "0.25",
+                "-l",
+                "output/truck/8x/point_cloud/iteration_30000/point_cloud.ply",
             ]
         },
     ]

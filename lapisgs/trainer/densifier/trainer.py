@@ -18,11 +18,16 @@ class PartialDensificationTrainer(DensificationTrainer):
     def optim_step(self):
         # freeze all other parameters except opacity in first `size_fixed_gs` points
         # https://github.com/nus-vv-streams/lapis-gs/blob/12dcda37ed43838d7407b28675bc26b7364ae431/scene/gaussian_model.py#L322
-        self.model._xyz.grad[:self.size_fixed_gs] = 0
-        self.model._features_dc.grad[:self.size_fixed_gs] = 0
-        self.model._features_rest.grad[:self.size_fixed_gs] = 0
-        self.model._scaling.grad[:self.size_fixed_gs] = 0
-        self.model._rotation.grad[:self.size_fixed_gs] = 0
+        if self.model._xyz.grad is not None:  # grad is None when after pruning or densification
+            self.model._xyz.grad[:self.size_fixed_gs] = 0
+        if self.model._features_dc.grad is not None:
+            self.model._features_dc.grad[:self.size_fixed_gs] = 0
+        if self.model._features_rest.grad is not None:
+            self.model._features_rest.grad[:self.size_fixed_gs] = 0
+        if self.model._scaling.grad is not None:
+            self.model._scaling.grad[:self.size_fixed_gs] = 0
+        if self.model._rotation.grad is not None:
+            self.model._rotation.grad[:self.size_fixed_gs] = 0
         return super().optim_step()
 
     def remove_points(self, rm_mask):
