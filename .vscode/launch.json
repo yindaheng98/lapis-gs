@@ -5,7 +5,7 @@
             "name": "train 8x",
             "type": "debugpy",
             "request": "launch",
-            "module": "lapisgs.train",
+            "module": "lapisgs.train_reduced",
             "console": "integratedTerminal",
             "justMyCode": false,
             "args": [

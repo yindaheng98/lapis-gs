@@ -26,7 +26,7 @@ modes = {
 
 def prepare_trainer(gaussians: GaussianModel, dataset: CameraDataset, mode: str, trainable_camera: bool = False, load_ply: str = None, with_scale_reg=False, configs={}) -> AbstractTrainer:
     if not load_ply:
-        from gaussian_splatting.train import prepare_trainer as legacy_prepare_trainer
+        from gaussian_splatting.prepare import prepare_trainer as legacy_prepare_trainer
         modemap = {
             "base": "densify",
             "camera": "camera-densify",
