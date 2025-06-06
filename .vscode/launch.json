@@ -40,6 +40,26 @@
             ]
         },
         {
+            "name": "render 8x",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "lapisgs.render",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": [
+                "-s",
+                "data/truck",
+                "-d",
+                "output/truck/8x",
+                "-i",
+                "30000",
+                "--mode",
+                "base",
+                "--load_camera",
+                "output/truck/8x/cameras.json",
+            ]
+        },
+        {
             "name": "train 4x",
             "type": "debugpy",
             "request": "launch",
@@ -59,6 +79,26 @@
                 "0.25",
                 "-l",
                 "output/truck/8x/point_cloud/iteration_30000/point_cloud.ply",
+            ]
+        },
+        {
+            "name": "render 4x",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "lapisgs.render",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": [
+                "-s",
+                "data/truck",
+                "-d",
+                "output/truck/4x",
+                "-i",
+                "30000",
+                "--mode",
+                "base",
+                "--load_camera",
+                "output/truck/4x/cameras.json",
             ]
         },
         {
@@ -84,6 +124,26 @@
             ]
         },
         {
+            "name": "render 2x",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "lapisgs.render",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": [
+                "-s",
+                "data/truck",
+                "-d",
+                "output/truck/2x",
+                "-i",
+                "30000",
+                "--mode",
+                "base",
+                "--load_camera",
+                "output/truck/2x/cameras.json",
+            ]
+        },
+        {
             "name": "train 1x",
             "type": "debugpy",
             "request": "launch",
@@ -103,6 +163,26 @@
                 "0.5",
                 "-l",
                 "output/truck/2x/point_cloud/iteration_30000/point_cloud.ply",
+            ]
+        },
+        {
+            "name": "render 1x",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "lapisgs.render",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": [
+                "-s",
+                "data/truck",
+                "-d",
+                "output/truck/1x",
+                "-i",
+                "30000",
+                "--mode",
+                "base",
+                "--load_camera",
+                "output/truck/1x/cameras.json",
             ]
         },
     ]
