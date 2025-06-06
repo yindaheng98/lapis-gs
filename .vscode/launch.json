@@ -37,7 +37,7 @@
                 "-i",
                 "10000",
                 "--mode",
-                "shculling",
+                "camera-shculling",
                 // "camera-shculling",
                 "--with_scale_reg",
                 // hyperparams
@@ -144,7 +144,7 @@
                 // densification of points would slower than pruning, so more densify and less pruning
                 "-odensify_from_iter=1000",
                 "-odensify_until_iter=7800",
-                "-odensify_interval=100",
+                "-odensify_interval=500",
                 "-oprune_from_iter=2000",
                 "-oprune_until_iter=7500",
                 "-oprune_interval=100",
@@ -227,7 +227,7 @@
                 // densification of points would slower than pruning, so more densify and less pruning
                 "-odensify_from_iter=1000",
                 "-odensify_until_iter=7800",
-                "-odensify_interval=100",
+                "-odensify_interval=500",
                 "-oprune_from_iter=2000",
                 "-oprune_until_iter=7500",
                 "-oprune_interval=100",
@@ -310,7 +310,7 @@
                 // densification of points would slower than pruning, so more densify and less pruning
                 "-odensify_from_iter=1000",
                 "-odensify_until_iter=7800",
-                "-odensify_interval=100",
+                "-odensify_interval=500",
                 "-oprune_from_iter=2000",
                 "-oprune_until_iter=7500",
                 "-oprune_interval=100",
