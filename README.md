@@ -2,136 +2,228 @@
 
 This repository contains the **refactored Python code for [LapisGS](https://github.com/nus-vv-streams/lapis-gs)**. It is forked from commit [12dcda37ed43838d7407b28675bc26b7364ae431](https://github.com/nus-vv-streams/lapis-gs/tree/12dcda37ed43838d7407b28675bc26b7364ae431). The original code has been **refactored to follow the standard Python package structure**, while **maintaining the same algorithms as the original version**.
 
-## Setup
+## Features
 
-Our work is built on the codebase of the original 3D Gaussian Splatting method. Please refer to the [original 3D Gaussian Splatting repository](https://github.com/graphdeco-inria/gaussian-splatting) for details about requirements.
+* [x] Code organized as a standard Python package
+* [x] Layered progressive 3D Gaussian Splatting
+* [x] Multi-resolution training pipeline
 
-## Pre-processing
+## Prerequisites
 
-### Data preparation
+* [Pytorch](https://pytorch.org/) (v2.4 or higher recommended)
+* [CUDA Toolkit](https://developer.nvidia.com/cuda-12-4-0-download-archive) (12.4 recommended, should match with PyTorch version)
 
-The first step is to generate the multi-resolution data for the training part. In our paper, we downsample the original data by factors of 2×, 4×, and 8×, to have four levels of resolution. 
+## Install
 
-We provide a script to generate multi-resolution data for four datasets we used in the paper: Synthetic Blender (*nerf_synthetic*), Mip-NeRF360 (*360*), Tanks&Temples (*tandt*), and Deep Blending (*db*). You can run the script with the following command:
-```bash
-python dataset_prepare.py --source_base <path to the source dataset root directory> --dataset_name <name of the dataset> --output_base <path to the output dataset root directory>
+### PyPI Install
+
+```shell
+pip install --upgrade lapis-gs
 ```
 
-Note that that similar to MipNeRF360 and original 3DGS, we target images at resolutions in the 1-1.6K pixel range. Therefore, for the *360* dataset, images whose width exceeds 1600 pixels will be automatically resized to 1600 pixels.
+## Install (Development)
 
-### Dataset structure
-
-For example, we can generate the dataset hierarchy of dataset *db* with the following command:
-```bash
-python dataset_prepare.py --source_base ./raw_dataset --dataset_name db --output_base ./source
+Install [`gaussian-splatting`](https://github.com/yindaheng98/gaussian-splatting).
+You can download the wheel from [PyPI](https://pypi.org/project/gaussian-splatting/):
+```shell
+pip install --upgrade gaussian-splatting
+```
+Alternatively, install the latest version from the source:
+```sh
+pip install --upgrade git+https://github.com/yindaheng98/gaussian-splatting.git@master
 ```
 
-You should have the following file structure for the model training:
+Install [`reduced-3dgs`](https://github.com/yindaheng98/reduced-3dgs).
+You can download the wheel from [PyPI](https://pypi.org/project/reduced-3dgs/):
+```shell
+pip install --upgrade reduced-3dgs
 ```
-project
-└── raw_dataset # source_base
-    ├── db # dataset_name
-    │   └── playroom # scene
-    │       ├── sparse
-    │       └── images
-└── source # output_base
-    ├── db # dataset_name
-    │   └── playroom # scene
-    │       └── playroom_res1
-    │           ├── sparse
-    │           └── images
-    │       └── playroom_res2
-    │           ├── sparse
-    │           └── images
-    │       └── playroom_res4
-    │           ├── sparse
-    │           └── images
-    │       └── playroom_res8
-    │           ├── sparse
-    │           └── images
+Alternatively, install the latest version from the source:
+```sh
+pip install --upgrade git+https://github.com/yindaheng98/reduced-3dgs.git@main
 ```
 
-As for NeRF Synthetic dataset, the structure is as follows:
-```
-project
-└── source
-    ├── nerf_synthetic
-    │   └── lego
-    │       └── lego_res1
-    │           ├── train
-    │           ├── test
-    │           ├── transforms_test.json
-    │           └── transforms_train.json
-    │       └── lego_res2
-    │           ├── train
-    │           ├── test
-    │           ├── transforms_test.json
-    │           └── transforms_train.json
-    │       └── lego_res4
-    │           ├── train
-    │           ├── test
-    │           ├── transforms_test.json
-    │           └── transforms_train.json
-    │       └── lego_res8
-    │           ├── train
-    │           ├── test
-    │           ├── transforms_test.json
-    │           └── transforms_train.json
+```shell
+git clone --recursive https://github.com/yindaheng98/lapis-gs
+cd lapis-gs
+pip install tqdm plyfile tifffile
+pip install --target . --upgrade --no-deps .
 ```
 
-
-## Running
-
-
-```bash
-python train_full_pipeline.py --model_base <path to the output model root directory> --dataset_base <path to the source root directory> --dataset_name <name of the dataset> --scene <name of the scene> --method <name of the method>
+(Optional) If you prefer not to install `gaussian-splatting` and `reduced-3dgs` in your environment, you can install them in your `lapis-gs` directory:
+```sh
+pip install --target . --no-deps --upgrade git+https://github.com/yindaheng98/gaussian-splatting.git@master
+pip install --target . --no-deps --upgrade git+https://github.com/yindaheng98/reduced-3dgs.git@main
 ```
 
-<details>
-<summary><span style="font-weight: bold;">Please click here to see the arguments for the `train_full_pipeline.py` script.</span></summary>
+## Quick Start
 
-| Parameter | Type | Description |
-| :-------: | :--: | :---------: |
-| `--model_base`   | `str` | Path to the output model root directory.|
-| `--dataset_base` | `str` | Path to the source root directory. |
-| `--dataset_name` | `str` | Name of the dataset of scenes. |
-| `--scene`        | `str` | Name of the scene. |
-| `--method`       | `str` | Name of the method we build the LOD 3DGS. Can be `"lapis"` (the proposed method) and `"freeze"` (freeze all attributes of the previous layer(s) when train the current layer). |
+1. Download dataset (T&T+DB COLMAP dataset, size 650MB):
 
-</details>
-<br>
-
-For example, we train the model for the scene *playroom* from dataset *db* with the proposed method *lapis*, using the command:
-```bash
-python train_full_pipeline.py --model_base ./model --dataset_base ./source --dataset_name db --scene playroom --method lapis
+```shell
+wget https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/datasets/input/tandt_db.zip -P ./data
+unzip data/tandt_db.zip -d data/
 ```
 
-The file structure after training should be as follows:
-```
-project
-└── source # dataset_base
-    ├── db # dataset_name
-    │   └── playroom # scene
-    │       ├── playroom_res1
-    │       ├── playroom_res2
-    │       ├── playroom_res4
-    │       └── playroom_res8
-└── model # model_base
-    ├── db # dataset_name
-    │   └── playroom # scene
-    │       └── lapis # method
-    │           ├── playroom_res1
-    │           ├── playroom_res2
-    │           ├── playroom_res4
-    │           └── playroom_res8
+2. Train LapisGS with full pipeline, in this way each layer shares the same training parameters:
+```shell
+python -m lapisgs.train_full_pipeline_reduced -s data/truck -d output/truck -i 30000 --mode base -olambda_dssim=0.8
 ```
 
-## Evaluation
+3. (Optional) Train progressive layers (8x → 4x → 2x → 1x), in this way you can modify the training parameters for each layer:
+```shell
+# Train 8x (lowest resolution)
+python -m lapisgs.train_reduced -s data/truck -d output/truck/8x --rescale_factor 0.125 -i 10000 --mode shculling -olambda_dssim=0.8
 
-We use the following command to evaluate the model:
-```bash
-python render.py -m <path to trained model> # Generate renderings
-python metrics.py -m <path to trained model> # Compute error metrics on renderings
+# Train 4x (load from 8x)
+python -m lapisgs.train_reduced -s data/truck -d output/truck/4x --rescale_factor 0.25 -l output/truck/8x/point_cloud/iteration_10000/point_cloud.ply --load_camera output/truck/8x/cameras.json -i 10000 --mode camera-shculling -olambda_dssim=0.8
+
+# Train 2x (load from 4x)
+python -m lapisgs.train_reduced -s data/truck -d output/truck/2x --rescale_factor 0.5 -l output/truck/4x/point_cloud/iteration_10000/point_cloud.ply --load_camera output/truck/4x/cameras.json -i 10000 --mode camera-shculling -olambda_dssim=0.8
+
+# Train 1x (full resolution, load from 2x)
+python -m lapisgs.train_reduced -s data/truck -d output/truck/1x --rescale_factor 1.0 -l output/truck/2x/point_cloud/iteration_10000/point_cloud.ply --load_camera output/truck/2x/cameras.json -i 10000 --mode camera-shculling -olambda_dssim=0.8
+```
+
+4. Render LapisGS at different resolutions:
+```shell
+# Render 8x
+python -m lapisgs.render -s data/truck -d output/truck/8x -i 10000 --mode base --load_camera output/truck/8x/cameras.json --rescale_factor 0.125
+
+# Render 4x
+python -m lapisgs.render -s data/truck -d output/truck/4x -i 10000 --mode camera --load_camera output/truck/4x/cameras.json --rescale_factor 0.25
+
+# Render 2x
+python -m lapisgs.render -s data/truck -d output/truck/2x -i 10000 --mode camera --load_camera output/truck/2x/cameras.json --rescale_factor 0.5
+
+# Render 1x (full resolution)
+python -m lapisgs.render -s data/truck -d output/truck/1x -i 10000 --mode camera --load_camera output/truck/1x/cameras.json --rescale_factor 1.0
+```
+
+> 💡 This repo does not contain code for creating dataset.
+> If you want to create your own dataset, please refer to [InstantSplat](https://github.com/yindaheng98/InstantSplat) or use [convert.py](https://github.com/graphdeco-inria/gaussian-splatting/blob/main/convert.py).
+
+> 💡 See [.vscode/launch.json](.vscode/launch.json) for advanced examples. See `lapisgs.train_full_pipeline_reduced` and `lapisgs.train_reduced` for full options.
+
+## API Usage
+
+This project is built on top of [`gaussian-splatting`](https://github.com/yindaheng98/gaussian-splatting) and [`reduced-3dgs`](https://github.com/yindaheng98/reduced-3dgs). Please refer to their documentation for basic usage of Gaussian models, datasets, and trainers.
+
+### Gaussian Models
+
+LapisGS uses the standard Gaussian models from `gaussian-splatting`:
+
+```python
+from gaussian_splatting import GaussianModel, CameraTrainableGaussianModel
+
+# Standard Gaussian model
+gaussians = GaussianModel(sh_degree).to(device)
+
+# For camera-trainable scenarios
+gaussians = CameraTrainableGaussianModel(sh_degree).to(device)
+```
+
+### Multi-Resolution Datasets
+
+LapisGS provides rescale-aware dataset classes for multi-resolution training:
+
+```python
+from lapisgs.dataset import RescaleColmapCameraDataset, RescaleTrainableCameraDataset
+
+# For standard training
+dataset = RescaleColmapCameraDataset(source_path, rescale_factor=0.125, load_depth=True) # 8x
+dataset = RescaleColmapCameraDataset(source_path, rescale_factor=0.25, load_depth=True) # 4x
+dataset = RescaleColmapCameraDataset(source_path, rescale_factor=0.5, load_depth=True) # 2x
+dataset = RescaleColmapCameraDataset(source_path, rescale_factor=1.0, load_depth=True) # 1x
+# ... you can use any rescale_factor as you want
+
+# For camera-trainable scenarios
+dataset = RescaleTrainableCameraDataset.from_colmap(source_path, rescale_factor=0.125, load_depth=True) # 8x
+dataset = RescaleTrainableCameraDataset.from_colmap(source_path, rescale_factor=0.25, load_depth=True) # 4x
+dataset = RescaleTrainableCameraDataset.from_colmap(source_path, rescale_factor=0.5, load_depth=True) # 2x
+dataset = RescaleTrainableCameraDataset.from_colmap(source_path, rescale_factor=1.0, load_depth=True) # 1x
+# ... you can use any rescale_factor as you want
+
+# Load from saved JSON
+dataset = RescaleTrainableCameraDataset.from_json(camera_json_path, rescale_factor=0.125, load_depth=True) # 8x
+dataset = RescaleTrainableCameraDataset.from_json(camera_json_path, rescale_factor=0.25, load_depth=True) # 4x
+dataset = RescaleTrainableCameraDataset.from_json(camera_json_path, rescale_factor=0.5, load_depth=True) # 2x
+dataset = RescaleTrainableCameraDataset.from_json(camera_json_path, rescale_factor=1.0, load_depth=True) # 1x
+# ... you can use any rescale_factor as you want
+```
+
+### LapisGS Trainers
+
+LapisGS provides specialized trainers with partial densification and opacity reset:
+
+```python
+from lapisgs.trainer import LapisTrainer, DepthLapisTrainer, LapisCameraTrainer, DepthLapisCameraTrainer
+
+# Basic LapisGS trainer
+trainer = LapisTrainer(
+    gaussians,
+    scene_extent=dataset.scene_extent(),
+    # ... other parameters
+)
+
+# LapisGS trainer with depth regularization
+trainer = DepthLapisTrainer(
+    gaussians,
+    scene_extent=dataset.scene_extent(),
+    # ... other parameters
+)
+
+# LapisGS trainer with camera optimization
+trainer = LapisCameraTrainer(
+    gaussians,
+    scene_extent=dataset.scene_extent(),
+    dataset=dataset,
+    # ... other parameters
+)
+
+# LapisGS trainer with both depth and camera optimization
+trainer = DepthLapisCameraTrainer(
+    gaussians,
+    scene_extent=dataset.scene_extent(),
+    dataset=dataset,
+    # ... other parameters
+)
+```
+
+### Training Pipeline
+
+```python
+from lapisgs.prepare import prepare_dataset, prepare_trainer
+from reduced_3dgs.prepare import prepare_gaussians
+
+# Prepare components for training
+dataset = prepare_dataset(
+    source=source_path,
+    device=device,
+    trainable_camera=True,
+    load_camera=camera_json_path,
+    rescale_factor=0.5
+)
+
+gaussians = prepare_gaussians(
+    sh_degree=3,
+    source=source_path,
+    device=device,
+    trainable_camera=True,
+    load_ply=foundation_ply_path
+)
+
+trainer = prepare_trainer(
+    gaussians=gaussians,
+    dataset=dataset,
+    mode="camera",  # "base", "camera", "nodepth-base", "nodepth-camera"
+    trainable_camera=True,
+    load_ply=foundation_ply_path
+)
+
+# Training loop
+for camera in dataset:
+    loss, out = trainer.step(camera)
 ```
 
 ### How to extract the enhanced layer
@@ -197,7 +289,7 @@ To reduce the model size, you may try to 1) lower down the lambda_dssim, or 2) i
 
 <p align="center">
     <span class="small">
-        *<i>Lapis</i> means ”layer” in Malay, the national language of Singapore --- the host of 3DV'25. The logo in the title depicts <a href="https://en.wikipedia.org/wiki/Kue_lapis">kuih lapis</a>, or ”layered cake”, a local delight in Singapore and neighboring countries. The authors are glad to serve kuih lapis to our friends at the conference to share the joy of the layered approach 🥳.
+        *<i>Lapis</i> means "layer" in Malay, the national language of Singapore --- the host of 3DV'25. The logo in the title depicts <a href="https://en.wikipedia.org/wiki/Kue_lapis">kuih lapis</a>, or "layered cake", a local delight in Singapore and neighboring countries. The authors are glad to serve kuih lapis to our friends at the conference to share the joy of the layered approach 🥳.
     </span>
 </p>
 <br>
