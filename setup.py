@@ -15,6 +15,7 @@ with open("README.md", "r", encoding='utf8') as fh:
     long_description = fh.read()
 
 packages = ['lapisgs'] + ["lapisgs." + package for package in find_packages(where="lapisgs")]
+packages += ['lapisgs.trainer.extensions.' + package for package in find_packages(where="lapisgs/trainer/extensions")]
 
 setup(
     name="lapisgs",
