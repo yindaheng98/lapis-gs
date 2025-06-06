@@ -5,8 +5,8 @@ from .densifier import PartialDensificationTrainer
 from .opacity_reset import PartialOpacityResetTrainerWrapper
 
 
-def LapisTrainer(model: GaussianModel, scene_extent: float, *args, **kwargs):
-    return PartialOpacityResetTrainerWrapper(PartialDensificationTrainer, model, scene_extent, *args, **kwargs)
+def LapisTrainer(model: GaussianModel, scene_extent: float, *args, opacity_lr=0.05, **kwargs):
+    return PartialOpacityResetTrainerWrapper(PartialDensificationTrainer, model, scene_extent, *args, opacity_lr=opacity_lr, **kwargs)
 
 
 def DepthLapisTrainer(model: GaussianModel, scene_extent: float, *args, **kwargs):
