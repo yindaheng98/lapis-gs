@@ -38,7 +38,7 @@
                 "10000",
                 "--mode",
                 "shculling",
-                // "camera-prune-shculling",
+                // "camera-shculling",
                 "--with_scale_reg",
                 // hyperparams
                 "-olambda_dssim=0.8",
@@ -71,6 +71,10 @@
                 "-oimportance_prune_from_iter=2000",
                 "-oimportance_prune_until_iter=8500",
                 "-oimportance_prune_interval=100",
+                // steps for camera
+                // "-ocamera_position_lr_max_steps=10000",
+                // "-ocamera_rotation_lr_max_steps=10000",
+                // "-ocamera_exposure_lr_max_steps=10000",
             ]
         },
         {
@@ -91,6 +95,8 @@
                 "base",
                 "--load_camera",
                 "output/truck/8x/cameras.json",
+                "--rescale_factor",
+                "0.125",
             ]
         },
         {
@@ -172,6 +178,8 @@
                 "camera",
                 "--load_camera",
                 "output/truck/4x/cameras.json",
+                "--rescale_factor",
+                "0.25",
             ]
         },
         {
@@ -253,6 +261,8 @@
                 "camera",
                 "--load_camera",
                 "output/truck/2x/cameras.json",
+                "--rescale_factor",
+                "0.5",
             ]
         },
         {
@@ -268,7 +278,7 @@
                 "-d",
                 "output/truck/1x",
                 "--rescale_factor",
-                "0.5",
+                "1.0",
                 "-l",
                 "output/truck/2x/point_cloud/iteration_10000/point_cloud.ply",
                 "--load_camera",
@@ -334,6 +344,8 @@
                 "camera",
                 "--load_camera",
                 "output/truck/1x/cameras.json",
+                "--rescale_factor",
+                "1.0",
             ]
         },
     ]
