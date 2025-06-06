@@ -19,6 +19,7 @@ if __name__ == "__main__":
     parser.add_argument("-d", "--destination", required=True, type=str)
     parser.add_argument("-i", "--iteration", required=True, type=int)
     parser.add_argument("--load_camera", default=None, type=str)
+    parser.add_argument("--rescale_factor", default=1.0, type=float)
     parser.add_argument("--mode", choices=["base", "camera"], default="base")
     parser.add_argument("--device", default="cuda", type=str)
     parser.add_argument("--no_rescale_depth_gt", action="store_true")
@@ -29,5 +30,5 @@ if __name__ == "__main__":
     with torch.no_grad():
         dataset, gaussians = prepare_rendering(
             sh_degree=args.sh_degree, source=args.source, device=args.device, trainable_camera=args.mode == "camera",
-            load_ply=load_ply, load_camera=args.load_camera, load_depth=True)
+            load_ply=load_ply, load_camera=args.load_camera, load_depth=True, rescale_factor=args.rescale_factor)
         rendering(dataset, gaussians, save, save_pcd=args.save_depth_pcd, rescale_depth_gt=not args.no_rescale_depth_gt)
