@@ -1,54 +1,6 @@
+# LapisGS: Layered Progressive 3D Gaussian Splatting for Adaptive Streaming (Packaged Python Version)
 
-<div align="center">
-    <h1>
-        <img src="/images/title.png" alt="icon" style="height: 1em; vertical-align: middle; margin-right: 0.1em;">
-        <strong>LapisGS: </strong>Layered Progressive 3D Gaussian Splatting for Adaptive Streaming
-    </h1>
-</div>
-
-<div align="center">
-    <a href="https://yuang-ian.github.io" target='_blank'>Yuang Shi</a><sup>1</sup>,
-    <a href="https://scholar.google.com/citations?user=PbKu-PsAAAAJ&hl=en" target='_blank'>Simone Gasparini</a><sup>2</sup>,
-    <a href="https://scholar.google.de/citations?user=H8QDhhAAAAAJ&hl=en" target='_blank'>Géraldine Morin</a><sup>2</sup>,
-    <a href="https://www.comp.nus.edu.sg/~ooiwt/" target='_blank'>Wei Tsang Ooi</a><sup>1</sup>,
-    <p>
-        <sup>1</sup>National University of Singapore,
-        <sup>2</sup>IRIT - Université de Toulouse
-    </p>
-    <p>
-    International Conference on 3D Vision (3DV), 2025
-    </p>
-</div>
-
-
-<div align="center">
-    <a href="http://arxiv.org/abs/2408.14823" target='_blank'>
-        <img src="https://img.shields.io/badge/Paper-%F0%9F%93%83-blue">
-    </a>
-    <a href="https://yuang-ian.github.io/lapisgs/" target='_blank'>
-        <img src="https://img.shields.io/badge/Project-%F0%9F%94%97-yellow">
-    </a>
-    <a href=""><img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fnus-vv-streams%2Flapis-gs&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=Visitors&edge_flat=false"/></a>
-</div> <br> <br>
-
-
-
-<p align="center">
-  <a href="">
-    <img src="/images/teaser.png" alt="teaser" width="80%">
-  </a>
-</p>
-
-<p align="center">
-    We introduce <strong><i>LapisGS</i></strong>*, a layered progressive 3DGS, for adaptive streaming and view-adaptive rendering. 
-</p>
-
-<p align="center">
-    <span class="small">
-        *<i>Lapis</i> means ”layer” in Malay, the national language of Singapore --- the host of 3DV'25. The logo in the title depicts <a href="https://en.wikipedia.org/wiki/Kue_lapis">kuih lapis</a>, or ”layered cake”, a local delight in Singapore and neighboring countries. The authors are glad to serve kuih lapis to our friends at the conference to share the joy of the layered approach 🥳.
-    </span>
-</p>
-<br>
+This repository contains the **refactored Python code for [LapisGS](https://github.com/nus-vv-streams/lapis-gs)**. It is forked from commit [12dcda37ed43838d7407b28675bc26b7364ae431](https://github.com/nus-vv-streams/lapis-gs/tree/12dcda37ed43838d7407b28675bc26b7364ae431). The original code has been **refactored to follow the standard Python package structure**, while **maintaining the same algorithms as the original version**.
 
 ## Setup
 
@@ -174,6 +126,14 @@ project
     │           └── playroom_res8
 ```
 
+## Evaluation
+
+We use the following command to evaluate the model:
+```bash
+python render.py -m <path to trained model> # Generate renderings
+python metrics.py -m <path to trained model> # Compute error metrics on renderings
+```
+
 ### How to extract the enhanced layer
 
 Note that \<scene\>_res1 is the highest resolution, and \<scene\>_res8 is the lowest resolution. The model is trained from the lowest resolution to the highest resolution. The model stored in the higher resolution folder contains not only the higher layer but also the lower layer(s).
@@ -182,7 +142,7 @@ We construct the merged GS with a specially designed order: the lower layers com
 
 <p align="center">
     <a href="">
-        <img src="/images/model_structure.png" alt="model_structure" width="70%">
+        <img src="images/model_structure.png" alt="model_structure" width="70%">
     </a>
 </p>
 
@@ -192,18 +152,55 @@ Through experiments, we found that the default loss function is not sensitive to
 
 To reduce the model size, you may try to 1) lower down the lambda_dssim, or 2) increase the densification threshold. Also, generally speaking, it is not necessary to make it SSIM-sensitive for complex scenes. For example, we note that training LapisGS for complex scene *playroom* with default lambda_dssim 0.2 can still produce reasonable layered structure, while it fails for simple object *lego*.
 
+<div align="center">
+    <h1>
+        <img src="images/title.png" alt="icon" style="height: 1em; vertical-align: middle; margin-right: 0.1em;">
+        <strong>LapisGS: </strong>Layered Progressive 3D Gaussian Splatting for Adaptive Streaming
+    </h1>
+</div>
+
+<div align="center">
+    <a href="https://yuang-ian.github.io" target='_blank'>Yuang Shi</a><sup>1</sup>,
+    <a href="https://scholar.google.com/citations?user=PbKu-PsAAAAJ&hl=en" target='_blank'>Simone Gasparini</a><sup>2</sup>,
+    <a href="https://scholar.google.de/citations?user=H8QDhhAAAAAJ&hl=en" target='_blank'>Géraldine Morin</a><sup>2</sup>,
+    <a href="https://www.comp.nus.edu.sg/~ooiwt/" target='_blank'>Wei Tsang Ooi</a><sup>1</sup>,
+    <p>
+        <sup>1</sup>National University of Singapore,
+        <sup>2</sup>IRIT - Université de Toulouse
+    </p>
+    <p>
+    International Conference on 3D Vision (3DV), 2025
+    </p>
+</div>
 
 
-## Evaluation
+<div align="center">
+    <a href="http://arxiv.org/abs/2408.14823" target='_blank'>
+        <img src="https://img.shields.io/badge/Paper-%F0%9F%93%83-blue">
+    </a>
+    <a href="https://yuang-ian.github.io/lapisgs/" target='_blank'>
+        <img src="https://img.shields.io/badge/Project-%F0%9F%94%97-yellow">
+    </a>
+</div> <br> <br>
 
-We use the following command to evaluate the model:
-```bash
-python render.py -m <path to trained model> # Generate renderings
-python metrics.py -m <path to trained model> # Compute error metrics on renderings
-```
 
 
-## Citation
+<p align="center">
+  <a href="">
+    <img src="images/teaser.png" alt="teaser" width="80%">
+  </a>
+</p>
+
+<p align="center">
+    We introduce <strong><i>LapisGS</i></strong>*, a layered progressive 3DGS, for adaptive streaming and view-adaptive rendering. 
+</p>
+
+<p align="center">
+    <span class="small">
+        *<i>Lapis</i> means ”layer” in Malay, the national language of Singapore --- the host of 3DV'25. The logo in the title depicts <a href="https://en.wikipedia.org/wiki/Kue_lapis">kuih lapis</a>, or ”layered cake”, a local delight in Singapore and neighboring countries. The authors are glad to serve kuih lapis to our friends at the conference to share the joy of the layered approach 🥳.
+    </span>
+</p>
+<br>
 
 If you find our code or paper useful, please cite
 
