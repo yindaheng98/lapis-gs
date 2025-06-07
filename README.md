@@ -65,7 +65,7 @@ wget https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/datasets/input/tan
 unzip data/tandt_db.zip -d data/
 ```
 
-2. Train LapisGS with full pipeline, in this way each layer shares the same training parameters:
+2. Train LapisGS with full pipeline (8x → 4x → 2x → 1x), in this way each layer shares the same training parameters except `rescale_factor`:
 ```shell
 python -m lapisgs.train_full_pipeline_reduced -s data/truck -d output/truck -i 30000 --mode base -olambda_dssim=0.8
 ```
