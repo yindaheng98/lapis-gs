@@ -9,22 +9,22 @@ pipeline() {
         -s data/$1 -d output/$1/4x \
         --rescale_factor 0.25 -i $2 \
         --mode camera-shculling \
-        -l output/truck/8x/point_cloud/iteration_$2/point_cloud.ply \
-        --load_camera output/truck/8x/cameras.json \
+        -l output/$1/8x/point_cloud/iteration_$2/point_cloud.ply \
+        --load_camera output/$1/8x/cameras.json \
         $GLOBALARGS
     python -m lapisgs.train_reduced \
         -s data/$1 -d output/$1/2x \
         --rescale_factor 0.5 -i $2 \
         --mode camera-shculling \
-        -l output/truck/4x/point_cloud/iteration_$2/point_cloud.ply \
-        --load_camera output/truck/4x/cameras.json \
+        -l output/$1/4x/point_cloud/iteration_$2/point_cloud.ply \
+        --load_camera output/$1/4x/cameras.json \
         $GLOBALARGS
     python -m lapisgs.train_reduced \
         -s data/$1 -d output/$1/1x \
         --rescale_factor 1.0 -i $2 \
         --mode camera-shculling \
-        -l output/truck/2x/point_cloud/iteration_$2/point_cloud.ply \
-        --load_camera output/truck/2x/cameras.json \
+        -l output/$1/2x/point_cloud/iteration_$2/point_cloud.ply \
+        --load_camera output/$1/2x/cameras.json \
         $GLOBALARGS
 }
 
