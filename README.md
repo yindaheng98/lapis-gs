@@ -18,7 +18,7 @@ This repository contains the **refactored Python code for [LapisGS](https://gith
 ### PyPI Install
 
 ```shell
-pip install --upgrade lapis-gs
+pip install --upgrade lapisgs
 ```
 
 ## Install (Development)
