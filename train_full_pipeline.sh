@@ -21,6 +21,7 @@ GLOBALARGS="
     -oopacity_reset_from_iter=3000 \
     -oopacity_reset_until_iter=7000 \
     -oopacity_reset_interval=500"
+FUNDATIONMODE="shculling"
 FUNDATIONARGS="
     -odensify_from_iter=1000 \
     -odensify_until_iter=7800 \
@@ -28,13 +29,25 @@ FUNDATIONARGS="
     -oprune_from_iter=2000 \
     -oprune_until_iter=7500 \
     -oprune_interval=500"
+ENHANCEMODE="camera-shculling"
 ENHANCEARGS="
     -odensify_from_iter=1000 \
     -odensify_until_iter=7800 \
     -odensify_interval=500 \
     -oprune_from_iter=2000 \
     -oprune_until_iter=7500 \
-    -oprune_interval=100
+    -oprune_interval=100 \
+    -ocamera_position_lr_max_steps=10000 \
+    -ocamera_rotation_lr_max_steps=10000 \
+    -ocamera_exposure_lr_max_steps=10000"
+BASELINEMODE="camera-densify-prune-shculling"
+BASELINEARGS="
+    -odensify_from_iter=1000 \
+    -odensify_until_iter=7800 \
+    -odensify_interval=500 \
+    -oprune_from_iter=2000 \
+    -oprune_until_iter=7500 \
+    -oprune_interval=100 \
     -ocamera_position_lr_max_steps=10000 \
     -ocamera_rotation_lr_max_steps=10000 \
     -ocamera_exposure_lr_max_steps=10000"
@@ -42,29 +55,34 @@ pipeline() {
     python -m lapisgs.train_reduced \
         -s data/$1 -d output/$1/8x \
         --rescale_factor 0.125 -i $ITERS \
-        --mode shculling \
+        --mode $FUNDATIONMODE \
         $GLOBALARGS $FUNDATIONARGS
     python -m lapisgs.train_reduced \
         -s data/$1 -d output/$1/4x \
         --rescale_factor 0.25 -i $ITERS \
-        --mode camera-shculling \
+        --mode $ENHANCEMODE \
         -l output/$1/8x/point_cloud/iteration_$ITERS/point_cloud.ply \
         --load_camera output/$1/8x/cameras.json \
         $GLOBALARGS $ENHANCEARGS
     python -m lapisgs.train_reduced \
         -s data/$1 -d output/$1/2x \
         --rescale_factor 0.5 -i $ITERS \
-        --mode camera-shculling \
+        --mode $ENHANCEMODE \
         -l output/$1/4x/point_cloud/iteration_$ITERS/point_cloud.ply \
         --load_camera output/$1/4x/cameras.json \
         $GLOBALARGS $ENHANCEARGS
     python -m lapisgs.train_reduced \
         -s data/$1 -d output/$1/1x \
         --rescale_factor 1.0 -i $ITERS \
-        --mode camera-shculling \
+        --mode $ENHANCEMODE \
         -l output/$1/2x/point_cloud/iteration_$ITERS/point_cloud.ply \
         --load_camera output/$1/2x/cameras.json \
         $GLOBALARGS $ENHANCEARGS
+    python -m reduced_3dgs.train \
+        -s data/$1 -d output/$1 \
+        -i $ITERS \
+        --mode $BASELINEMODE \
+        $GLOBALARGS $BASELINEARGS
 }
 
 pipeline truck
