@@ -55,7 +55,10 @@ def PartialPrunerInDensifyTrainer(
 # Depth trainer
 
 def DepthPrunerInDensifyTrainer(model: GaussianModel, scene_extent: float, dataset: TrainableCameraDataset, *args, **kwargs):
-    return DepthTrainerWrapper(PartialPrunerInDensifyTrainer, model, scene_extent, *args, dataset=dataset, **kwargs)
+    return DepthTrainerWrapper(
+        PartialPrunerInDensifyTrainer,
+        model, scene_extent, dataset,
+        *args, **kwargs)
 
 
 LapisReducedTrainer = DepthPrunerInDensifyTrainer

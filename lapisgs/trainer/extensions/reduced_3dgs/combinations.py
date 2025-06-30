@@ -51,8 +51,11 @@ def PartialFullPrunerInDensifyTrainer(
     )
 
 
-def DepthPartialFullPrunerInDensifyTrainer(model: GaussianModel, scene_extent: float, dataset: TrainableCameraDataset, *args, **kwargs):
-    return DepthTrainerWrapper(PartialFullPrunerInDensifyTrainer, model, scene_extent, *args, dataset=dataset, **kwargs)
+def DepthPartialFullPrunerInDensifyTrainer(model: GaussianModel, scene_extent: float, dataset: CameraDataset, *args, **kwargs):
+    return DepthTrainerWrapper(
+        PartialFullPrunerInDensifyTrainer,
+        model, scene_extent, dataset,
+        *args, **kwargs)
 
 
 def PartialOpacityResetPrunerInDensifyTrainer(

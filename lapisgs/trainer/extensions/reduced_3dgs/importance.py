@@ -53,7 +53,10 @@ def PartialImportancePrunerInDensifyTrainer(
 
 # Depth trainer
 def DepthPartialImportancePrunerInDensifyTrainer(model: GaussianModel, scene_extent: float, dataset: TrainableCameraDataset, *args, **kwargs):
-    return DepthTrainerWrapper(PartialImportancePrunerInDensifyTrainer, model, scene_extent, *args, dataset=dataset, **kwargs)
+    return DepthTrainerWrapper(
+        PartialImportancePrunerInDensifyTrainer,
+        model, scene_extent, dataset,
+        *args, **kwargs)
 
 
 LapisImportanceTrainer = DepthPartialImportancePrunerInDensifyTrainer
