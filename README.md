@@ -7,6 +7,7 @@ This repository contains the **refactored Python code for [LapisGS](https://gith
 * [x] Code organized as a standard Python package
 * [x] Layered progressive 3D Gaussian Splatting
 * [x] Multi-resolution training pipeline
+* [x] Integration with [reduced-3dgs](https://github.com/yindaheng98/reduced-3dgs)
 
 ## Prerequisites
 
