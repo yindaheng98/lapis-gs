@@ -7,6 +7,7 @@ from gaussian_splatting.utils import quaternion_to_matrix
 
 
 class RescaleCameraDatasetIface:
+    # Override save_cameras in CameraDataset for all Rescale datasets
     def save_cameras(self, path):
         # https://github.com/yindaheng98/gaussian-splatting/blob/56576b647d9c5bd05300f5640cd03a8c75a760bc/gaussian_splatting/dataset/dataset.py#L24
         cameras = []
@@ -25,23 +26,29 @@ class RescaleCameraDatasetIface:
 
 class RescaleJSONCameraDataset(RescaleCameraDatasetIface, JSONCameraDataset):
     def __init__(self, path, load_depth=False, rescale_factor=1.0):
-        # https://github.com/yindaheng98/gaussian-splatting/blob/56576b647d9c5bd05300f5640cd03a8c75a760bc/gaussian_splatting/dataset/dataset.py#L38
+        # https://github.com/yindaheng98/gaussian-splatting/blob/ae0e1d03349e906f0e7ad08b9b5506feb81cd57d/gaussian_splatting/dataset/dataset.py#L38
         with open(path, 'r') as f:
             self.json_cameras = json.load(f)
         self.load_depth = load_depth
+        self.rescale_factor = rescale_factor
+        self.load_cameras()
+
+    def load_cameras(self, device=None):
+        # https://github.com/yindaheng98/gaussian-splatting/blob/ae0e1d03349e906f0e7ad08b9b5506feb81cd57d/gaussian_splatting/dataset/dataset.py#L53
         for camera in self.json_cameras:
             if 'fullimage_width' not in camera:
                 camera['fullimage_width'] = camera['width']
             if 'fullimage_height' not in camera:
                 camera['fullimage_height'] = camera['height']
-            camera['fx'] = camera['fx'] / camera['width'] * camera['fullimage_width'] * rescale_factor
-            camera['fy'] = camera['fy'] / camera['height'] * camera['fullimage_height'] * rescale_factor
-            camera['width'] = round(camera['fullimage_width'] * rescale_factor)
-            camera['height'] = round(camera['fullimage_height'] * rescale_factor)
+            camera['fx'] = camera['fx'] / camera['width'] * camera['fullimage_width'] * self.rescale_factor
+            camera['fy'] = camera['fy'] / camera['height'] * camera['fullimage_height'] * self.rescale_factor
+            camera['width'] = round(camera['fullimage_width'] * self.rescale_factor)
+            camera['height'] = round(camera['fullimage_height'] * self.rescale_factor)
         self.cameras = [dict2camera(
-            camera, load_depth=self.load_depth,
+            camera, load_depth=self.load_depth, device=device,
             custom_data=dict(fullimage_width=camera['fullimage_width'], fullimage_height=camera['fullimage_height'])
         ) for camera in self.json_cameras]
+        return self
 
 
 class RescaleTrainableCameraDataset(TrainableCameraDataset):
