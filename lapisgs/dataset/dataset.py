@@ -1,7 +1,7 @@
 import torch
 import json
 
-from gaussian_splatting.dataset import JSONCameraDataset, TrainableCameraDataset
+from gaussian_splatting.dataset import JSONCameraDataset, TrainableCameraDataset, FixedTrainableCameraDataset
 from gaussian_splatting.camera import camera2dict, dict2camera, Camera
 from gaussian_splatting.utils import quaternion_to_matrix
 
@@ -75,3 +75,35 @@ class RescaleTrainableCameraDataset(TrainableCameraDataset):
         cameras = RescaleJSONCameraDataset(path, load_depth=load_depth, rescale_factor=rescale_factor)
         exposures = [(torch.tensor(camera['exposure'], dtype=torch.float) if 'exposure' in camera else torch.eye(3, 4)) for camera in cameras.json_cameras]
         return cls(cameras, exposures)
+
+
+class RescaleFixedTrainableCameraDataset(RescaleJSONCameraDataset):
+    # Same as TrainableCameraDataset, but is fixed
+    # Used for loading cameras saved by TrainableCameraDataset
+
+    def __init__(self, path, load_depth=False, rescale_factor=1.0):
+        # https://github.com/yindaheng98/gaussian-splatting/blob/ae0e1d03349e906f0e7ad08b9b5506feb81cd57d/gaussian_splatting/dataset/camera_trainable.py#L93
+        super().__init__(path, load_depth=load_depth, rescale_factor=rescale_factor)
+        self.load_exposures()
+
+    def to(self, device):
+        # https://github.com/yindaheng98/gaussian-splatting/blob/ae0e1d03349e906f0e7ad08b9b5506feb81cd57d/gaussian_splatting/dataset/camera_trainable.py#L97
+        self = super().to(device)
+        return self.load_exposures(device=device)
+
+    def load_exposures(self, device=None):
+        # https://github.com/yindaheng98/gaussian-splatting/blob/ae0e1d03349e906f0e7ad08b9b5506feb81cd57d/gaussian_splatting/dataset/camera_trainable.py#L101
+        return FixedTrainableCameraDataset.load_exposures(self, device=device)
+
+    def save_cameras(self, path):
+        # https://github.com/yindaheng98/gaussian-splatting/blob/ae0e1d03349e906f0e7ad08b9b5506feb81cd57d/gaussian_splatting/dataset/camera_trainable.py#L111
+        cameras = []
+        for idx, camera in enumerate(self):
+            cameras.append({
+                **camera2dict(camera, idx),
+                "exposure": camera.custom_data['exposures'].detach().tolist(),
+                "fullimage_width": camera.custom_data["fullimage_width"],
+                "fullimage_height": camera.custom_data["fullimage_height"],
+            })
+        with open(path, 'w') as f:
+            json.dump(cameras, f, indent=2)

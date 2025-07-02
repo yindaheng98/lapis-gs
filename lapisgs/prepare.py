@@ -2,7 +2,7 @@ from gaussian_splatting import GaussianModel
 from gaussian_splatting.dataset import CameraDataset
 from gaussian_splatting.trainer import AbstractTrainer
 from gaussian_splatting.trainer.extensions import ScaleRegularizeTrainerWrapper
-from lapisgs.dataset import RescaleJSONCameraDataset, RescaleColmapCameraDataset, RescaleTrainableCameraDataset, RescaleColmapTrainableCameraDataset
+from lapisgs.dataset import RescaleFixedTrainableCameraDataset, RescaleColmapCameraDataset, RescaleTrainableCameraDataset, RescaleColmapTrainableCameraDataset
 from lapisgs.trainer import Trainer, CameraTrainer, DepthTrainer, DepthCameraTrainer
 
 
@@ -11,7 +11,7 @@ def prepare_dataset(source: str, device: str, trainable_camera: bool = False, lo
         dataset = (RescaleTrainableCameraDataset.from_json(load_camera, load_depth=load_depth, rescale_factor=rescale_factor)
                    if load_camera else RescaleColmapTrainableCameraDataset(source, load_depth=load_depth, rescale_factor=rescale_factor)).to(device)
     else:
-        dataset = (RescaleJSONCameraDataset(load_camera, load_depth=load_depth, rescale_factor=rescale_factor)
+        dataset = (RescaleFixedTrainableCameraDataset(load_camera, load_depth=load_depth, rescale_factor=rescale_factor)
                    if load_camera else RescaleColmapCameraDataset(source, load_depth=load_depth, rescale_factor=rescale_factor)).to(device)
     return dataset
 
