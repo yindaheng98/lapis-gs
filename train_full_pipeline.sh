@@ -1,17 +1,10 @@
 ITERS=30000
-GLOBALARGS="
-    -olambda_dssim=0.8 \
-    -ocamera_rotation_lr_init=0 \
-    -ocamera_rotation_lr_init=0 \
-    -ocamera_position_lr_init=0 \
-    -ocamera_position_lr_final=0 \
-    -ocamera_exposure_lr_init=0 \
-    -ocamera_exposure_lr_final=0" # Do not optimize camera (load from reduced-3dgs, already trained)
-FUNDATIONMODE="camera-shculling" # But use camera rendering
+GLOBALARGS="-olambda_dssim=0.8"
+FUNDATIONMODE="shculling" # Do not optimize camera (load from reduced-3dgs, already trained)
 FUNDATIONARGS="
     -omercy_type='redundancy_opacity_opacity' \
     -oimportance_prune_interval=100"
-ENHANCEMODE="camera-shculling"
+ENHANCEMODE="shculling"
 ENHANCEARGS="
     -omercy_type='redundancy_opacity_opacity' \
     -oimportance_prune_interval=100 \
