@@ -5,14 +5,15 @@ from gaussian_splatting import GaussianModel
 from gaussian_splatting.dataset import CameraDataset
 from gaussian_splatting.trainer import AbstractTrainer
 from gaussian_splatting.train import save_cfg_args, training
-from reduced_3dgs.prepare import prepare_gaussians
 from lapisgs.prepare import prepare_dataset
-from lapisgs.prepare_reduced import modes, prepare_trainer
+from lapisgs.prepare_reduced import modes, prepare_gaussians, prepare_trainer
 
 
 def prepare_training(sh_degree: int, source: str, device: str, mode: str, trainable_camera: bool = False, load_ply: str = None, load_camera: str = None, load_depth=False, rescale_factor=1.0, with_scale_reg=False, configs={}) -> Tuple[CameraDataset, GaussianModel, AbstractTrainer]:
     dataset = prepare_dataset(source=source, device=device, trainable_camera=trainable_camera, load_camera=load_camera, load_depth=load_depth, rescale_factor=rescale_factor)
-    gaussians = prepare_gaussians(sh_degree=sh_degree, source=source, device=device, trainable_camera=trainable_camera, load_ply=load_ply)
+    gaussians, fixed_size = prepare_gaussians(sh_degree=sh_degree, source=source, device=device, trainable_camera=trainable_camera, load_ply=load_ply)
+    if isinstance(fixed_size, int):
+        configs["fixed_opacity_size"] = configs["fixed_size"] = fixed_size
     trainer = prepare_trainer(gaussians=gaussians, dataset=dataset, mode=mode, load_ply=load_ply, with_scale_reg=with_scale_reg, configs=configs)
     return dataset, gaussians, trainer
 

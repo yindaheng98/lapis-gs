@@ -11,6 +11,7 @@ class PartialDensificationTrainer(DensificationTrainer):
             scene_extent: float,
             densifier: AbstractDensifier,
             *args,
+            fixed_size=None,
             fix_xyz=True,
             fix_features_dc=True,
             fix_features_rest=True,
@@ -20,7 +21,7 @@ class PartialDensificationTrainer(DensificationTrainer):
             **kwargs
     ):
         super().__init__(model, scene_extent, densifier, *args, **kwargs)
-        self.size_fixed_gs = model.get_xyz.shape[0]
+        self.size_fixed_gs = fixed_size if isinstance(fixed_size, int) else model.get_xyz.shape[0]
         self.fix_xyz = fix_xyz
         self.fix_features_dc = fix_features_dc
         self.fix_features_rest = fix_features_rest
@@ -61,6 +62,7 @@ def SplitClonePartialDensifierTrainerWrapper(
         densify_grad_threshold=0.0002,
         densify_percent_dense=0.01,
         densify_percent_too_big=0.8,
+        fixed_size=None,
         fix_xyz=True,
         fix_features_dc=True,
         fix_features_rest=True,
@@ -84,6 +86,7 @@ def SplitClonePartialDensifierTrainerWrapper(
         model, scene_extent,
         densifier,
         *args,
+        fixed_size=fixed_size,
         fix_xyz=fix_xyz,
         fix_features_dc=fix_features_dc,
         fix_features_rest=fix_features_rest,

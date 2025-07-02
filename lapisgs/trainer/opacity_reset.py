@@ -11,11 +11,12 @@ class PartialOpacityResetter(OpacityResetter):
             self,
             base_trainer: AbstractTrainer,
             *args,
+            fixed_opacity_size=None,
             reset_fixed_opacity_to=None,
             **kwargs
     ):
         super().__init__(base_trainer, *args, **kwargs)
-        self.size_fixed_gs = base_trainer.model.get_opacity.shape[0]
+        self.size_fixed_gs = fixed_opacity_size if isinstance(fixed_opacity_size, int) else base_trainer.model.get_opacity.shape[0]
         assert reset_fixed_opacity_to is None or reset_fixed_opacity_to < 1, "reset_fixed_opacity_to should be less than 1"
         self.reset_fixed_opacity_to = reset_fixed_opacity_to
 
@@ -40,6 +41,7 @@ def PartialOpacityResetTrainerWrapper(
         opacity_reset_from_iter=3000,
         opacity_reset_until_iter=15000,
         opacity_reset_interval=3000,
+        fixed_opacity_size=None,
         reset_fixed_opacity_to=None,
         **kwargs) -> PartialOpacityResetter:
     return PartialOpacityResetter(
@@ -47,5 +49,6 @@ def PartialOpacityResetTrainerWrapper(
         opacity_reset_from_iter=opacity_reset_from_iter,
         opacity_reset_until_iter=opacity_reset_until_iter,
         opacity_reset_interval=opacity_reset_interval,
+        fixed_opacity_size=fixed_opacity_size,
         reset_fixed_opacity_to=reset_fixed_opacity_to,
     )
