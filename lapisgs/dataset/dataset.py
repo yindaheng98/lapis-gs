@@ -30,6 +30,10 @@ class RescaleJSONCameraDataset(RescaleCameraDatasetIface, JSONCameraDataset):
             self.json_cameras = json.load(f)
         self.load_depth = load_depth
         for camera in self.json_cameras:
+            if 'fullimage_width' not in camera:
+                camera['fullimage_width'] = camera['width']
+            if 'fullimage_height' not in camera:
+                camera['fullimage_height'] = camera['height']
             camera['fx'] = camera['fx'] / camera['width'] * camera['fullimage_width'] * rescale_factor
             camera['fy'] = camera['fy'] / camera['height'] * camera['fullimage_height'] * rescale_factor
             camera['width'] = round(camera['fullimage_width'] * rescale_factor)
