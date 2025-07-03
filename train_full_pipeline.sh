@@ -3,10 +3,12 @@ GLOBALARGS="-olambda_dssim=0.8"
 FUNDATIONMODE="shculling" # Do not optimize camera (load from reduced-3dgs, already trained)
 FUNDATIONARGS="
     -omercy_type='redundancy_opacity_opacity' \
+    -oimportance_prune_from_iter=3000 \
     -oimportance_prune_interval=100"
 ENHANCEMODE="shculling"
 ENHANCEARGS="
     -omercy_type='redundancy_opacity_opacity' \
+    -oimportance_prune_from_iter=3000 \
     -oimportance_prune_interval=100 \
     -odensify_interval=500 \
     -oprune_interval=100"
@@ -25,7 +27,6 @@ pipeline() {
         -s data/$1 -d output/$1/8x \
         --rescale_factor 0.125 -i $ITERS \
         --mode $FUNDATIONMODE \
-        -l output/$1/point_cloud/iteration_$ITERS/point_cloud.ply \
         --load_camera output/$1/cameras.json \
         $GLOBALARGS $FUNDATIONARGS
     # Train the next layer (4x), use the trained camera from reduced-3dgs and scene from 8x
