@@ -12,6 +12,7 @@ def prepare_rendering(sh_degree: int, source: str, device: str, trainable_camera
 
 
 if __name__ == "__main__":
+    from gaussian_splatting.prepare import prepare_dataset as prepare_dataset_legacy
     from argparse import ArgumentParser
     parser = ArgumentParser()
     parser.add_argument("--sh_degree", default=3, type=int)
@@ -26,9 +27,15 @@ if __name__ == "__main__":
     parser.add_argument("--save_depth_pcd", action="store_true")
     args = parser.parse_args()
     load_ply = os.path.join(args.destination, "point_cloud", "iteration_" + str(args.iteration), "point_cloud.ply")
-    save = os.path.join(args.destination, "ours_{}".format(args.iteration))
+    save = os.path.join(args.destination, "ours_rescale_{}".format(args.iteration))
     with torch.no_grad():
         dataset, gaussians = prepare_rendering(
             sh_degree=args.sh_degree, source=args.source, device=args.device, trainable_camera=args.mode == "camera",
             load_ply=load_ply, load_camera=args.load_camera, load_depth=True, rescale_factor=args.rescale_factor)
+        rendering(dataset, gaussians, save, save_pcd=args.save_depth_pcd, rescale_depth_gt=not args.no_rescale_depth_gt)
+
+        save = os.path.join(args.destination, "ours_{}".format(args.iteration))
+        dataset = prepare_dataset_legacy(
+            source=args.source, device=args.device, trainable_camera=args.mode == "camera",
+            load_camera=args.load_camera, load_depth=True)
         rendering(dataset, gaussians, save, save_pcd=args.save_depth_pcd, rescale_depth_gt=not args.no_rescale_depth_gt)
