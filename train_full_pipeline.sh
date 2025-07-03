@@ -3,12 +3,12 @@ GLOBALARGS="-olambda_dssim=0.8"
 FUNDATIONMODE="shculling" # Do not optimize camera (load from reduced-3dgs, already trained)
 FUNDATIONARGS="
     -omercy_type='redundancy_opacity_opacity' \
-    -oimportance_prune_from_iter=3000 \
+    -oimportance_prune_from_iter=1000 \
     -oimportance_prune_interval=100"
 ENHANCEMODE="shculling"
 ENHANCEARGS="
     -omercy_type='redundancy_opacity_opacity' \
-    -oimportance_prune_from_iter=3000 \
+    -oimportance_prune_from_iter=1000 \
     -oimportance_prune_interval=100 \
     -odensify_interval=500 \
     -oprune_interval=100"
