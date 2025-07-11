@@ -1,5 +1,5 @@
 ITERS=30000
-GLOBALARGS="-olambda_dssim=0.8"
+GLOBALARGS="-olambda_dssim=0.8 --with_scale_reg"
 FUNDATIONMODE="shculling" # Do not optimize camera (load from reduced-3dgs, already trained)
 FUNDATIONARGS="
     -omercy_type='redundancy_opacity_opacity' \
@@ -12,9 +12,16 @@ ENHANCEARGS="
     -oimportance_prune_interval=100 \
     -odensify_interval=500 \
     -oprune_interval=100"
+# ENHANCEARGS="$ENHANCEARGS \
+#     -oreset_fixed_opacity_to=0.95 \
+#     -ofix_features_dc=False \
+#     -ofix_features_rest=False \
+#     -ofix_scaling=False \
+#     -ofix_rotation=False \
+#     -ofix_opacity=False"
 BASRLINEITERS=30000
 BASELINEMODE="camera-densify-prune-shculling"
-BASELINEARGS="-omercy_type='redundancy_opacity_opacity'"
+BASELINEARGS="-omercy_type='redundancy_opacity_opacity' --with_scale_reg"
 pipeline() {
     # Train the baseline model, regular reduced-3dgs
     python -m reduced_3dgs.train \
