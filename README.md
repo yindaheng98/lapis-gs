@@ -163,21 +163,20 @@ from lapisgs.trainer import LapisTrainer, DepthLapisTrainer, LapisCameraTrainer,
 # Basic LapisGS trainer
 trainer = LapisTrainer(
     gaussians,
-    scene_extent=dataset.scene_extent(),
+    dataset=dataset,
     # ... other parameters
 )
 
 # LapisGS trainer with depth regularization
 trainer = DepthLapisTrainer(
     gaussians,
-    scene_extent=dataset.scene_extent(),
+    dataset=dataset,
     # ... other parameters
 )
 
 # LapisGS trainer with camera optimization
 trainer = LapisCameraTrainer(
     gaussians,
-    scene_extent=dataset.scene_extent(),
     dataset=dataset,
     # ... other parameters
 )
@@ -185,7 +184,6 @@ trainer = LapisCameraTrainer(
 # LapisGS trainer with both depth and camera optimization
 trainer = DepthLapisCameraTrainer(
     gaussians,
-    scene_extent=dataset.scene_extent(),
     dataset=dataset,
     # ... other parameters
 )

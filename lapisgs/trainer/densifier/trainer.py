@@ -1,5 +1,6 @@
 from typing import Callable
 from gaussian_splatting import GaussianModel
+from gaussian_splatting.dataset import CameraDataset
 from gaussian_splatting.trainer import DensificationTrainer
 from gaussian_splatting.trainer.densifier import AbstractDensifier, SplitCloneDensifier
 
@@ -8,9 +9,8 @@ class PartialDensificationTrainer(DensificationTrainer):
 
     def __init__(
             self, model: GaussianModel,
-            scene_extent: float,
+            dataset: CameraDataset,
             densifier: AbstractDensifier,
-            *args,
             fixed_size=None,
             fix_xyz=True,
             fix_features_dc=True,
@@ -18,9 +18,9 @@ class PartialDensificationTrainer(DensificationTrainer):
             fix_scaling=True,
             fix_rotation=True,
             fix_opacity=False,
-            **kwargs
+            **configs
     ):
-        super().__init__(model, scene_extent, densifier, *args, **kwargs)
+        super().__init__(model, dataset, densifier, **configs)
         self.size_fixed_gs = fixed_size if isinstance(fixed_size, int) else model.get_xyz.shape[0]
         self.fix_xyz = fix_xyz
         self.fix_features_dc = fix_features_dc
@@ -52,10 +52,9 @@ class PartialDensificationTrainer(DensificationTrainer):
 
 
 def SplitClonePartialDensifierTrainerWrapper(
-        noargs_base_densifier_constructor: Callable[[GaussianModel, float], AbstractDensifier],
+        noargs_base_densifier_constructor: Callable[[GaussianModel, CameraDataset], AbstractDensifier],
         model: GaussianModel,
-        scene_extent: float,
-        *args,
+        dataset: CameraDataset,
         densify_from_iter=500,
         densify_until_iter=15000,
         densify_interval=100,
@@ -69,12 +68,12 @@ def SplitClonePartialDensifierTrainerWrapper(
         fix_scaling=True,
         fix_rotation=True,
         fix_opacity=False,
-        **kwargs):
+        **configs):
     # https://github.com/yindaheng98/gaussian-splatting/blob/56576b647d9c5bd05300f5640cd03a8c75a760bc/gaussian_splatting/trainer/densifier/densifier.py#L149
-    densifier = noargs_base_densifier_constructor(model, scene_extent)
+    densifier = noargs_base_densifier_constructor(model, dataset)
     densifier = SplitCloneDensifier(
         densifier,
-        scene_extent,
+        dataset,
         densify_from_iter=densify_from_iter,
         densify_until_iter=densify_until_iter,
         densify_interval=densify_interval,
@@ -83,9 +82,8 @@ def SplitClonePartialDensifierTrainerWrapper(
         densify_percent_too_big=densify_percent_too_big
     )
     return PartialDensificationTrainer(
-        model, scene_extent,
+        model, dataset,
         densifier,
-        *args,
         fixed_size=fixed_size,
         fix_xyz=fix_xyz,
         fix_features_dc=fix_features_dc,
@@ -93,5 +91,5 @@ def SplitClonePartialDensifierTrainerWrapper(
         fix_scaling=fix_scaling,
         fix_rotation=fix_rotation,
         fix_opacity=fix_opacity,
-        **kwargs
+        **configs
     )

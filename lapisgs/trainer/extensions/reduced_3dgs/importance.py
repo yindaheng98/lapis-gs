@@ -1,6 +1,5 @@
-from typing import List
-from gaussian_splatting import Camera, GaussianModel
-from gaussian_splatting.dataset import TrainableCameraDataset
+from gaussian_splatting import GaussianModel
+from gaussian_splatting.dataset import CameraDataset, TrainableCameraDataset
 from gaussian_splatting.trainer import DepthTrainerWrapper, NoopDensifier
 from lapisgs.trainer import PartialDensificationTrainerWrapper
 from reduced_3dgs.importance import ImportancePruner
@@ -10,9 +9,7 @@ from reduced_3dgs.importance import ImportancePruner
 
 def PartialImportancePrunerInDensifyTrainer(
         model: GaussianModel,
-        scene_extent: float,
-        dataset: List[Camera],
-        *args,
+        dataset: CameraDataset,
         importance_prune_from_iter=15000,
         importance_prune_until_iter=20000,
         importance_prune_interval: int = 1000,
@@ -26,9 +23,9 @@ def PartialImportancePrunerInDensifyTrainer(
         importance_prune_thr_T_alpha=1.0,
         importance_prune_thr_T_alpha_avg=0.001,
         importance_v_pow=0.1,
-        **kwargs):
+        **configs):
     return PartialDensificationTrainerWrapper(
-        lambda model, scene_extent: ImportancePruner(
+        lambda model, dataset: ImportancePruner(
             NoopDensifier(model),
             dataset,
             importance_prune_from_iter=importance_prune_from_iter,
@@ -46,17 +43,17 @@ def PartialImportancePrunerInDensifyTrainer(
             importance_v_pow=importance_v_pow,
         ),
         model,
-        scene_extent,
-        *args, **kwargs
+        dataset,
+        **configs
     )
 
 
 # Depth trainer
-def DepthPartialImportancePrunerInDensifyTrainer(model: GaussianModel, scene_extent: float, dataset: TrainableCameraDataset, *args, **kwargs):
+def DepthPartialImportancePrunerInDensifyTrainer(model: GaussianModel, dataset: TrainableCameraDataset, **configs):
     return DepthTrainerWrapper(
         PartialImportancePrunerInDensifyTrainer,
-        model, scene_extent, dataset,
-        *args, **kwargs)
+        model, dataset,
+        **configs)
 
 
 LapisImportanceTrainer = DepthPartialImportancePrunerInDensifyTrainer

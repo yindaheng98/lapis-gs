@@ -2,6 +2,7 @@ from typing import Callable
 import torch
 
 from gaussian_splatting import GaussianModel
+from gaussian_splatting.dataset import CameraDataset
 from gaussian_splatting.trainer import AbstractTrainer
 from gaussian_splatting.trainer.opacity_reset import OpacityResetter, replace_tensor_to_optimizer
 
@@ -10,12 +11,11 @@ class PartialOpacityResetter(OpacityResetter):
     def __init__(
             self,
             base_trainer: AbstractTrainer,
-            *args,
             fixed_opacity_size=None,
             reset_fixed_opacity_to=None,
-            **kwargs
+            **configs
     ):
-        super().__init__(base_trainer, *args, **kwargs)
+        super().__init__(base_trainer, **configs)
         self.size_fixed_gs = fixed_opacity_size if isinstance(fixed_opacity_size, int) else base_trainer.model.get_opacity.shape[0]
         assert reset_fixed_opacity_to is None or reset_fixed_opacity_to < 1, "reset_fixed_opacity_to should be less than 1"
         self.reset_fixed_opacity_to = reset_fixed_opacity_to
@@ -36,16 +36,15 @@ class PartialOpacityResetter(OpacityResetter):
 def PartialOpacityResetTrainerWrapper(
         base_trainer_constructor: Callable[..., AbstractTrainer],
         model: GaussianModel,
-        scene_extent: float,
-        *args,
+        dataset: CameraDataset,
         opacity_reset_from_iter=3000,
         opacity_reset_until_iter=15000,
         opacity_reset_interval=3000,
         fixed_opacity_size=None,
         reset_fixed_opacity_to=None,
-        **kwargs) -> PartialOpacityResetter:
+        **configs) -> PartialOpacityResetter:
     return PartialOpacityResetter(
-        base_trainer=base_trainer_constructor(model, scene_extent, *args, **kwargs),
+        base_trainer=base_trainer_constructor(model, dataset, **configs),
         opacity_reset_from_iter=opacity_reset_from_iter,
         opacity_reset_until_iter=opacity_reset_until_iter,
         opacity_reset_interval=opacity_reset_interval,

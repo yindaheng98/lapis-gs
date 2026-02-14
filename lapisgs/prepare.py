@@ -37,18 +37,10 @@ def prepare_trainer(gaussians: GaussianModel, dataset: CameraDataset, mode: str,
             gaussians=gaussians, dataset=dataset, mode=modemap[mode], trainable_camera=trainable_camera, load_ply=load_ply, with_scale_reg=with_scale_reg, configs=configs)
     constructor = modes[mode]
     if with_scale_reg:
-        constructor = lambda *args, **kwargs: ScaleRegularizeTrainerWrapper(modes[mode], *args, **kwargs)
-    if trainable_camera:
-        trainer = constructor(
-            gaussians,
-            scene_extent=dataset.scene_extent(),
-            dataset=dataset,
-            **configs
-        )
-    else:
-        trainer = constructor(
-            gaussians,
-            scene_extent=dataset.scene_extent(),
-            **configs
-        )
+        constructor = lambda model, dataset, **configs: ScaleRegularizeTrainerWrapper(modes[mode], model, dataset, **configs)
+    trainer = constructor(
+        gaussians,
+        dataset=dataset,
+        **configs
+    )
     return trainer

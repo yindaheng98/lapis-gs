@@ -1,6 +1,6 @@
-from typing import Callable, List
-from gaussian_splatting import Camera, GaussianModel
-from gaussian_splatting.dataset import TrainableCameraDataset
+from typing import Callable
+from gaussian_splatting import GaussianModel
+from gaussian_splatting.dataset import CameraDataset, TrainableCameraDataset
 from gaussian_splatting.trainer import AbstractDensifier, DepthTrainerWrapper, NoopDensifier
 from lapisgs.trainer import SplitClonePartialDensifierTrainerWrapper
 from reduced_3dgs.pruning import BasePruner
@@ -9,11 +9,9 @@ from reduced_3dgs.pruning import BasePruner
 
 
 def PartialPrunerInDensifyTrainerWrapper(
-        noargs_base_densifier_constructor: Callable[[GaussianModel, float, List[Camera]], AbstractDensifier],
+        noargs_base_densifier_constructor: Callable[[GaussianModel, CameraDataset], AbstractDensifier],
         model: GaussianModel,
-        scene_extent: float,
-        dataset: List[Camera],
-        *args,
+        dataset: CameraDataset,
         prune_from_iter=1000,
         prune_until_iter=15000,
         prune_interval: int = 100,
@@ -21,11 +19,11 @@ def PartialPrunerInDensifyTrainerWrapper(
         lambda_mercy=1.,
         mercy_minimum=3,
         mercy_type='redundancy_opacity',
-        **kwargs):
+        **configs):
     return SplitClonePartialDensifierTrainerWrapper(
-        lambda model, scene_extent: BasePruner(
-            noargs_base_densifier_constructor(model, scene_extent, dataset),
-            scene_extent, dataset,
+        lambda model, dataset: BasePruner(
+            noargs_base_densifier_constructor(model, dataset),
+            dataset,
             prune_from_iter=prune_from_iter,
             prune_until_iter=prune_until_iter,
             prune_interval=prune_interval,
@@ -35,30 +33,29 @@ def PartialPrunerInDensifyTrainerWrapper(
             mercy_type=mercy_type,
         ),
         model,
-        scene_extent,
-        *args, **kwargs
+        dataset,
+        **configs
     )
 
 
 def PartialPrunerInDensifyTrainer(
         model: GaussianModel,
-        scene_extent: float,
-        dataset: List[Camera],
-        *args, **kwargs):
+        dataset: CameraDataset,
+        **configs):
     return PartialPrunerInDensifyTrainerWrapper(
-        lambda model, scene_extent, dataset: NoopDensifier(model),
-        model, scene_extent, dataset,
-        *args, **kwargs
+        lambda model, dataset: NoopDensifier(model),
+        model, dataset,
+        **configs
     )
 
 
 # Depth trainer
 
-def DepthPrunerInDensifyTrainer(model: GaussianModel, scene_extent: float, dataset: TrainableCameraDataset, *args, **kwargs):
+def DepthPrunerInDensifyTrainer(model: GaussianModel, dataset: TrainableCameraDataset, **configs):
     return DepthTrainerWrapper(
         PartialPrunerInDensifyTrainer,
-        model, scene_extent, dataset,
-        *args, **kwargs)
+        model, dataset,
+        **configs)
 
 
 LapisReducedTrainer = DepthPrunerInDensifyTrainer

@@ -19,7 +19,7 @@ packages += ['lapisgs.trainer.extensions.' + package for package in find_package
 
 setup(
     name="lapisgs",
-    version='1.2.2',
+    version='1.3.0',
     author='yindaheng98',
     author_email='yindaheng98@gmail.com',
     url='https://github.com/yindaheng98/lapis-gs',
@@ -34,7 +34,7 @@ setup(
         'lapisgs': 'lapisgs',
     },
     install_requires=[
-        'gaussian-splatting < 2.3.0',
+        'gaussian-splatting >= 2.3.0',
         'reduced-3dgs'
     ]
 )

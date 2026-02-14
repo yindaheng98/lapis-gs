@@ -1,29 +1,30 @@
 from gaussian_splatting import GaussianModel, CameraTrainableGaussianModel
+from gaussian_splatting.dataset import CameraDataset
 from gaussian_splatting.trainer import DepthTrainerWrapper, CameraTrainerWrapper
 from lapisgs.dataset import RescaleTrainableCameraDataset
 from .densifier import PartialDensificationTrainer
 from .opacity_reset import PartialOpacityResetTrainerWrapper
 
 
-def LapisTrainer(model: GaussianModel, scene_extent: float, *args, opacity_lr=0.05, **kwargs):
-    return PartialOpacityResetTrainerWrapper(PartialDensificationTrainer, model, scene_extent, *args, opacity_lr=opacity_lr, **kwargs)
+def LapisTrainer(model: GaussianModel, dataset: CameraDataset, opacity_lr=0.05, **configs):
+    return PartialOpacityResetTrainerWrapper(PartialDensificationTrainer, model, dataset, opacity_lr=opacity_lr, **configs)
 
 
-def DepthLapisTrainer(model: GaussianModel, scene_extent: float, *args, **kwargs):
-    return DepthTrainerWrapper(LapisTrainer, model, scene_extent, *args, **kwargs)
+def DepthLapisTrainer(model: GaussianModel, dataset: CameraDataset, **configs):
+    return DepthTrainerWrapper(LapisTrainer, model, dataset, **configs)
 
 
-def LapisCameraTrainer(model: CameraTrainableGaussianModel, scene_extent: float, dataset: RescaleTrainableCameraDataset, *args, **kwargs):
+def LapisCameraTrainer(model: CameraTrainableGaussianModel, dataset: RescaleTrainableCameraDataset, **configs):
     return CameraTrainerWrapper(
-        lambda model, scene_extent, dataset, *args, **kwargs: LapisTrainer(model, scene_extent, *args, **kwargs),
-        model, scene_extent, dataset, *args, **kwargs
+        LapisTrainer,
+        model, dataset, **configs
     )
 
 
-def DepthLapisCameraTrainer(model: CameraTrainableGaussianModel, scene_extent: float, dataset: RescaleTrainableCameraDataset, *args, **kwargs):
+def DepthLapisCameraTrainer(model: CameraTrainableGaussianModel, dataset: RescaleTrainableCameraDataset, **configs):
     return CameraTrainerWrapper(
-        lambda model, scene_extent, dataset, *args, **kwargs: DepthLapisTrainer(model, scene_extent, *args, **kwargs),
-        model, scene_extent, dataset, *args, **kwargs
+        DepthLapisTrainer,
+        model, dataset, **configs
     )
 
 
