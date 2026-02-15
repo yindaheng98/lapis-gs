@@ -19,7 +19,7 @@ packages += ['lapisgs.trainer.extensions.' + package for package in find_package
 
 setup(
     name="lapisgs",
-    version='1.3.0',
+    version='1.3.1',
     author='yindaheng98',
     author_email='yindaheng98@gmail.com',
     url='https://github.com/yindaheng98/lapis-gs',

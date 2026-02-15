@@ -34,7 +34,7 @@ def PartialDensificationTrainerWrapper(
     )
 
 
-def PartialDensificationTrainer(
+def BasePartialDensificationTrainer(
         model: GaussianModel,
         dataset: CameraDataset,
         **configs):

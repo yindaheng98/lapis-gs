@@ -2,12 +2,12 @@ from gaussian_splatting import GaussianModel, CameraTrainableGaussianModel
 from gaussian_splatting.dataset import CameraDataset
 from gaussian_splatting.trainer import DepthTrainerWrapper, CameraTrainerWrapper
 from lapisgs.dataset import RescaleTrainableCameraDataset
-from .densifier import PartialDensificationTrainer
+from .densifier import BasePartialDensificationTrainer
 from .opacity_reset import PartialOpacityResetTrainerWrapper
 
 
 def LapisTrainer(model: GaussianModel, dataset: CameraDataset, opacity_lr=0.05, **configs):
-    return PartialOpacityResetTrainerWrapper(PartialDensificationTrainer, model, dataset, opacity_lr=opacity_lr, **configs)
+    return PartialOpacityResetTrainerWrapper(BasePartialDensificationTrainer, model, dataset, opacity_lr=opacity_lr, **configs)
 
 
 def DepthLapisTrainer(model: GaussianModel, dataset: CameraDataset, **configs):
