@@ -33,8 +33,8 @@ def prepare_trainer(gaussians: GaussianModel, dataset: CameraDataset, mode: str,
         modemap = {
             "base": "densify-pruning",
             "camera": "camera-densify-pruning",
-            "shculling": "densify-prune-shculling",
-            "camera-shculling": "camera-densify-prune-shculling",
+            "shculling": "densify-pruning-shculling",
+            "camera-shculling": "camera-densify-pruning-shculling",
         }
         trainer, _ = legacy_prepare_trainer(
             gaussians=gaussians, dataset=dataset, mode=modemap[mode], with_scale_reg=with_scale_reg, quantize=False, configs=configs)
