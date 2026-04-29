@@ -20,7 +20,7 @@ ENHANCEARGS="
 #     -ofix_rotation=False \
 #     -ofix_opacity=False"
 BASRLINEITERS=30000
-BASELINEMODE="camera-densify-prune-shculling"
+BASELINEMODE="camera-densify-pruning-shculling"
 BASELINEARGS="-omercy_type='redundancy_opacity_opacity' --with_scale_reg"
 pipeline() {
     # Train the baseline model, regular reduced-3dgs
