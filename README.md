@@ -1,4 +1,4 @@
-# LapisGS: Layered Progressive 3D Gaussian Splatting for Adaptive Streaming (Packaged Python Version)
+# LapisGS: Layered Progressive 3D Gaussian Splatting for Adaptive Streaming (Python Package Version)
 
 This repository contains the **refactored Python code for [LapisGS](https://github.com/nus-vv-streams/lapis-gs)**. It is forked from commit [12dcda37ed43838d7407b28675bc26b7364ae431](https://github.com/nus-vv-streams/lapis-gs/tree/12dcda37ed43838d7407b28675bc26b7364ae431). The original code has been **refactored to follow the standard Python package structure**, while **maintaining the same algorithms as the original version**.
 
@@ -13,65 +13,53 @@ This repository contains the **refactored Python code for [LapisGS](https://gith
 
 * [Pytorch](https://pytorch.org/) (v2.4 or higher recommended)
 * [CUDA Toolkit](https://developer.nvidia.com/cuda-12-4-0-download-archive) (12.4 recommended, should match with PyTorch version)
+* [`gaussian-splatting`](https://github.com/yindaheng98/gaussian-splatting)
+* [`reduced-3dgs`](https://github.com/yindaheng98/reduced-3dgs)
 
-## Install
+(Optional) If you have trouble with [`gaussian-splatting`](https://github.com/yindaheng98/gaussian-splatting) or [`reduced-3dgs`](https://github.com/yindaheng98/reduced-3dgs), try to install them from source:
+```sh
+pip install wheel setuptools
+pip install --upgrade git+https://github.com/yindaheng98/gaussian-splatting.git@master --no-build-isolation
+pip install --upgrade git+https://github.com/yindaheng98/reduced-3dgs.git@main --no-build-isolation
+```
 
-### PyPI Install
+## PyPI Install
 
 ```shell
 pip install --upgrade lapisgs
 ```
-
-## Install (Development)
-
-Install [`gaussian-splatting`](https://github.com/yindaheng98/gaussian-splatting).
-You can download the wheel from [PyPI](https://pypi.org/project/gaussian-splatting/):
+or
+build latest from source:
 ```shell
-pip install --upgrade gaussian-splatting
-```
-Alternatively, install the latest version from the source:
-```sh
-pip install --upgrade git+https://github.com/yindaheng98/gaussian-splatting.git@master
+pip install wheel setuptools
+pip install --upgrade git+https://github.com/yindaheng98/lapis-gs.git@main --no-build-isolation
 ```
 
-Install [`reduced-3dgs`](https://github.com/yindaheng98/reduced-3dgs).
-You can download the wheel from [PyPI](https://pypi.org/project/reduced-3dgs/):
-```shell
-pip install --upgrade reduced-3dgs
-```
-Alternatively, install the latest version from the source:
-```sh
-pip install --upgrade git+https://github.com/yindaheng98/reduced-3dgs.git@main
-```
+### Development Install
 
 ```shell
 git clone --recursive https://github.com/yindaheng98/lapis-gs
 cd lapis-gs
-pip install tqdm plyfile tifffile
-pip install --target . --upgrade --no-deps .
-```
-
-(Optional) If you prefer not to install `gaussian-splatting` and `reduced-3dgs` in your environment, you can install them in your `lapis-gs` directory:
-```sh
-pip install --target . --no-deps --upgrade git+https://github.com/yindaheng98/gaussian-splatting.git@master
-pip install --target . --no-deps --upgrade git+https://github.com/yindaheng98/reduced-3dgs.git@main
+pip install wheel setuptools
+pip install --upgrade gaussian-splatting reduced-3dgs
+pip install --upgrade .
 ```
 
 ## Quick Start
 
-1. Download dataset (T&T+DB COLMAP dataset, size 650MB):
+1. Download the dataset (T&T+DB COLMAP dataset, size 650MB):
 
 ```shell
 wget https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/datasets/input/tandt_db.zip -P ./data
 unzip data/tandt_db.zip -d data/
 ```
 
-2. Train LapisGS with full pipeline (8x → 4x → 2x → 1x), in this way each layer shares the same training parameters except `rescale_factor`:
+2. Train LapisGS with the full pipeline (8x → 4x → 2x → 1x). In this way each layer shares the same training parameters except `rescale_factor`:
 ```shell
 python -m lapisgs.train_full_pipeline_reduced -s data/truck -d output/truck -i 30000 --mode base -olambda_dssim=0.8
 ```
 
-3. (Optional) Train progressive layers (8x → 4x → 2x → 1x), in this way you can modify the training parameters for each layer:
+3. (Optional) Train progressive layers (8x → 4x → 2x → 1x). In this way you can modify the training parameters for each layer:
 ```shell
 # Train 8x (lowest resolution)
 python -m lapisgs.train_reduced -s data/truck -d output/truck/8x --rescale_factor 0.125 -i 10000 --mode shculling -olambda_dssim=0.8
@@ -101,10 +89,10 @@ python -m lapisgs.render -s data/truck -d output/truck/2x -i 10000 --mode camera
 python -m lapisgs.render -s data/truck -d output/truck/1x -i 10000 --mode camera --load_camera output/truck/1x/cameras.json --rescale_factor 1.0
 ```
 
-> 💡 This repo does not contain code for creating dataset.
-> If you want to create your own dataset, please refer to [InstantSplat](https://github.com/yindaheng98/InstantSplat) or use [convert.py](https://github.com/graphdeco-inria/gaussian-splatting/blob/main/convert.py).
+> 💡 Note: This repository does not include code for creating datasets.
+> If you wish to create your own dataset, please refer to [InstantSplat](https://github.com/yindaheng98/InstantSplat) or use [convert.py](https://github.com/graphdeco-inria/gaussian-splatting/blob/main/convert.py).
 
-> 💡 See [.vscode/launch.json](.vscode/launch.json) for advanced examples. See `lapisgs.train_full_pipeline_reduced` and `lapisgs.train_reduced` for full options.
+> 💡 See [.vscode/launch.json](.vscode/launch.json) for more examples. Refer to `lapisgs.train_full_pipeline_reduced` and `lapisgs.train_reduced` for full options.
 
 ## API Usage
 
