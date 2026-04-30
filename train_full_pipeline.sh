@@ -29,6 +29,12 @@ pipeline() {
         -i $BASRLINEITERS \
         --mode $BASELINEMODE \
         $BASELINEARGS
+    python -m gaussian_splatting.render \
+        -s data/$1 -d output/$1 \
+        -i $BASRLINEITERS \
+        --mode camera \
+        --load_camera output/$1/cameras.json
+
     # Train the fundation layer (8x), use the trained camera and scene from reduced-3dgs
     python -m lapisgs.train_reduced \
         -s data/$1 -d output/$1/8x \
@@ -36,6 +42,12 @@ pipeline() {
         --mode $FUNDATIONMODE \
         --load_camera output/$1/cameras.json \
         $GLOBALARGS $FUNDATIONARGS
+    python -m lapisgs.render \
+        -s data/$1 -d output/$1/8x \
+        --rescale_factor 0.125 -i $ITERS \
+        --mode base \
+        --load_camera output/$1/8x/cameras.json
+
     # Train the next layer (4x), use the trained camera from reduced-3dgs and scene from 8x
     python -m lapisgs.train_reduced \
         -s data/$1 -d output/$1/4x \
@@ -44,6 +56,13 @@ pipeline() {
         -l output/$1/8x/point_cloud/iteration_$ITERS/point_cloud.ply \
         --load_camera output/$1/cameras.json \
         $GLOBALARGS $ENHANCEARGS
+    python -m lapisgs.render \
+        -s data/$1 -d output/$1/4x \
+        --rescale_factor 0.25 -i $ITERS \
+        --mode camera \
+        --load_camera output/$1/4x/cameras.json
+
+    # Train the next layer (2x), use the trained camera from 8x and scene from 4x
     python -m lapisgs.train_reduced \
         -s data/$1 -d output/$1/2x \
         --rescale_factor 0.5 -i $ITERS \
@@ -51,6 +70,13 @@ pipeline() {
         -l output/$1/4x/point_cloud/iteration_$ITERS/point_cloud.ply \
         --load_camera output/$1/cameras.json \
         $GLOBALARGS $ENHANCEARGS
+    python -m lapisgs.render \
+        -s data/$1 -d output/$1/2x \
+        --rescale_factor 0.5 -i $ITERS \
+        --mode camera \
+        --load_camera output/$1/2x/cameras.json
+
+    # Train the next layer (1x), use the trained camera from 4x and scene from 2x
     python -m lapisgs.train_reduced \
         -s data/$1 -d output/$1/1x \
         --rescale_factor 1.0 -i $ITERS \
@@ -58,6 +84,11 @@ pipeline() {
         -l output/$1/2x/point_cloud/iteration_$ITERS/point_cloud.ply \
         --load_camera output/$1/cameras.json \
         $GLOBALARGS $ENHANCEARGS
+    python -m lapisgs.render \
+        -s data/$1 -d output/$1/1x \
+        --rescale_factor 1.0 -i $ITERS \
+        --mode camera \
+        --load_camera output/$1/1x/cameras.json
 }
 
 pipeline truck
