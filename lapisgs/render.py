@@ -12,7 +12,6 @@ def prepare_rendering(sh_degree: int, source: str, device: str, trainable_camera
 
 
 if __name__ == "__main__":
-    from gaussian_splatting.prepare import prepare_dataset as prepare_dataset_legacy
     from argparse import ArgumentParser
     parser = ArgumentParser()
     parser.add_argument("--sh_degree", default=3, type=int)
@@ -35,7 +34,7 @@ if __name__ == "__main__":
         rendering(dataset, gaussians, save, save_pcd=args.save_depth_pcd, rescale_depth_gt=not args.no_rescale_depth_gt)
 
         save = os.path.join(args.destination, "ours_{}".format(args.iteration))
-        dataset = prepare_dataset_legacy(
+        dataset = prepare_dataset(
             source=args.source, device=args.device, trainable_camera=args.mode == "camera",
-            load_camera=args.load_camera, load_depth=True)
+            load_camera=args.load_camera, load_depth=True, rescale_factor=1.0)
         rendering(dataset, gaussians, save, save_pcd=args.save_depth_pcd, rescale_depth_gt=not args.no_rescale_depth_gt)
