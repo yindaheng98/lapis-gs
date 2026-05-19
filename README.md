@@ -1,5 +1,10 @@
 # LapisGS: Layered Progressive 3D Gaussian Splatting for Adaptive Streaming (Python Package Version)
 
+[![PyPI version](https://img.shields.io/pypi/v/lapisgs.svg?logo=pypi)](https://pypi.org/project/lapisgs/)
+[![Downloads](https://api.pepy.tech/personalized-badge/lapisgs?period=month&left_color=grey&right_color=brightgreen&left_text=monthly%20downloads)](https://pepy.tech/project/lapisgs)
+[![Total downloads](https://api.pepy.tech/personalized-badge/lapisgs?period=total&left_color=grey&right_color=brightgreen&left_text=total%20downloads)](https://pepy.tech/project/lapisgs)
+[![CI](https://github.com/yindaheng98/lapis-gs/actions/workflows/pip-publish.yml/badge.svg)](https://github.com/yindaheng98/lapis-gs/actions/workflows/ci.yml)
+
 This repository contains the **refactored Python code for [LapisGS](https://github.com/nus-vv-streams/lapis-gs)**. It is forked from commit [12dcda37ed43838d7407b28675bc26b7364ae431](https://github.com/nus-vv-streams/lapis-gs/tree/12dcda37ed43838d7407b28675bc26b7364ae431). The original code has been **refactored to follow the standard Python package structure**, while **maintaining the same algorithms as the original version**.
 
 ## Features
